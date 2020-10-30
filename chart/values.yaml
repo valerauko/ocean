@@ -12,6 +12,20 @@ image:
 
 timeZone: "Etc/UTC"
 
+database:
+  ## Existing secret for database credentials. Must have all the keys:
+  ## USERNAME, DATABASE, HOSTNAME, PASSWORD.
+  # existingSecret: "ocean-db-creds"
+  password: ""
+  hostname: "mariadb.default.svc.cluster.local"
+
+admin:
+  email: me@example.com
+  password: ""
+  ## Existing secret for admin credentials. Must have all the keys:
+  ## EMAIL, PASSWORD
+  # existingSecret: ""
+
 imagePullSecrets: []
 nameOverride: ""
 fullnameOverride: ""
