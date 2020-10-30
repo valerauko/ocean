@@ -51,12 +51,24 @@ app.kubernetes.io/instance: {{ .Release.Name }}
 {{- end }}
 
 {{/*
-Create the name of the service account to use
+Create the name of the secrets to use
 */}}
-{{- define "ocean.serviceAccountName" -}}
-{{- if .Values.serviceAccount.create }}
-{{- default (include "ocean.fullname" .) .Values.serviceAccount.name }}
-{{- else }}
-{{- default "default" .Values.serviceAccount.name }}
+{{- define "ocean.databaseSecret" -}}
+{{- default (printf "%s-database" (include "ocean.fullname" .)) .Values.database.existingSecret }}
 {{- end }}
+{{- define "ocean.adminSecret" -}}
+{{- default (printf "%s-database" (include "ocean.fullname" .)) .Values.database.existingSecret }}
 {{- end }}
+
+{{/*
+Storage class
+*/}}
+{{- define "ocean.storageClass" -}}
+{{- if .Values.ocean.storageClass -}}
+    {{- if (eq "-" .Values.persistence.storageClass) -}}
+        {{- printf "storageClassName: \"\"" -}}
+    {{- else }}
+        {{- printf "storageClassName: %s" .Values.persistence.storageClass -}}
+    {{- end -}}
+{{- end -}}
+{{- end -}}
