@@ -64,7 +64,7 @@ Create the name of the secrets to use
 Storage class
 */}}
 {{- define "ocean.storageClass" -}}
-{{- if .Values.ocean.storageClass -}}
+{{- if .Values.persistence.storageClass -}}
     {{- if (eq "-" .Values.persistence.storageClass) -}}
         {{- printf "storageClassName: \"\"" -}}
     {{- else }}
