@@ -57,7 +57,7 @@ Create the name of the secrets to use
 {{- default (printf "%s-database" (include "ocean.fullname" .)) .Values.database.existingSecret }}
 {{- end }}
 {{- define "ocean.adminSecret" -}}
-{{- default (printf "%s-database" (include "ocean.fullname" .)) .Values.database.existingSecret }}
+{{- default (printf "%s-admin" (include "ocean.fullname" .)) .Values.database.existingSecret }}
 {{- end }}
 
 {{/*
