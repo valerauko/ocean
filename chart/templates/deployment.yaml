@@ -26,7 +26,7 @@ spec:
         {{- toYaml .Values.podSecurityContext | nindent 8 }}
       initContainers:
         - name: "{{ .Chart.Name }}-generate-config"
-          image: valerauko/env-replace
+          image: valerauko/env-replace:0.1.0
           workingDir: /tmp/env-input
           securityContext:
             {{- toYaml .Values.securityContext | nindent 12 }}
