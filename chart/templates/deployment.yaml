@@ -32,7 +32,7 @@ spec:
             {{- toYaml .Values.securityContext | nindent 12 }}
           env:
             - name: DESTINATION
-              value: /shared/conf
+              value: /shared/seafile/conf
             - name: SECRET_KEY
               valueFrom:
                 secretKeyRef:
