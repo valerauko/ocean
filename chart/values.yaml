@@ -10,12 +10,14 @@ image:
   # Overrides the image tag whose default is the chart appVersion.
   tag: ""
 
+location: "https://docs.seafile.com"
 timeZone: "Etc/UTC"
 
 database:
   ## Existing secret for database credentials. Must have all the keys:
-  ## USERNAME, DATABASE, HOSTNAME, PASSWORD.
+  ## USERNAME, HOSTNAME, PASSWORD.
   # existingSecret: "ocean-db-creds"
+  username: "seafile"
   password: ""
   hostname: "mariadb.default.svc.cluster.local"
 
@@ -25,6 +27,10 @@ admin:
   ## Existing secret for admin credentials. Must have all the keys:
   ## EMAIL, PASSWORD
   # existingSecret: ""
+
+webDav:
+  enabled: false
+  port: 8080
 
 imagePullSecrets: []
 nameOverride: ""
