@@ -1,0 +1,89 @@
+kind: ConfigMap
+apiVersion: v1
+metadata:
+  name: "{{ template "ocean.fullname" . }}-raw-config"
+  labels:
+    {{- include "ocean.labels" . | nindent 4 }}
+data:
+  ccnet.conf: |
+    [General]
+    SERVICE_URL = {{ .Values.location }}
+
+    [Database]
+    ENGINE = mysql
+    HOST = "${MYSQL_HOST}"
+    PORT = 3306
+    USER = "${MYSQL_USER}"
+    PASSWD = "${MYSQL_PASS}"
+    DB = ccnet_db
+    CONNECTION_CHARSET = utf8
+
+    [Client]
+    UNIX_SOCKET = /opt/seafile/ccnet.sock
+
+  gunicorn.conf.py: |
+    import os
+
+    daemon = True
+    workers = 5
+
+    # default localhost:8000
+    bind = "127.0.0.1:8000"
+
+    # Pid
+    pids_dir = '/opt/seafile/pids'
+    pidfile = os.path.join(pids_dir, 'seahub.pid')
+
+    # for file upload, we need a longer timeout value (default is only 30s, too short)
+    timeout = 1200
+
+    limit_request_line = 8190
+
+  seafdav.conf: |
+    [WEBDAV]
+    enabled = {{ .Values.webDav.enabled }}
+    port = {{ .Values.webDav.port }}
+    fastcgi = false
+    share_name = /seafdav
+
+  seafile.conf: |
+    [fileserver]
+    port = 8082
+
+    [database]
+    type = mysql
+    host = "${MYSQL_HOST}"
+    port = 3306
+    user = "${MYSQL_USER}"
+    password = "${MYSQL_PASS}"
+    db_name = seafile_db
+    connection_charset = utf8
+
+  seahub_settings.py: |
+    # -*- coding: utf-8 -*-
+    SECRET_KEY = "b'${SECRET_KEY}'"
+
+    DATABASES = {
+        'default': {
+            'ENGINE': 'django.db.backends.mysql',
+            'NAME': 'seahub_db',
+            'USER': '${MYSQL_USER}',
+            'PASSWORD': '${MYSQL_PASS}',
+            'HOST': '${MYSQL_HOST}',
+            'PORT': '3306'
+        }
+    }
+
+    CACHES = {
+        'default': {
+            'BACKEND': 'django_pylibmc.memcached.PyLibMCCache',
+            'LOCATION': '{{ .Chart.Name }}-memcached:11211',
+        },
+        'locmem': {
+            'BACKEND': 'django.core.cache.backends.locmem.LocMemCache',
+        },
+    }
+
+    COMPRESS_CACHE_BACKEND = 'locmem'
+    TIME_ZONE = '{{ .Values.timeZone }}'
+    FILE_SERVER_ROOT = "{{ .Values.location }}/seafhttp"
