@@ -24,19 +24,71 @@ spec:
       {{- end }}
       securityContext:
         {{- toYaml .Values.podSecurityContext | nindent 8 }}
+      initContainers:
+        - name: "{{ .Chart.Name }}-generate-config"
+          image: valerauko/env-replace
+          workingDir: /tmp/env-input
+          securityContext:
+            {{- toYaml .Values.securityContext | nindent 12 }}
+          env:
+            - name: DESTINATION
+              value: /shared/conf
+            - name: SECRET_KEY
+              valueFrom:
+                secretKeyRef:
+                  name: "{{ template "ocean.fullname" . }}-key-secret"
+                  key: KEY
+            - name: MYSQL_USER
+              valueFrom:
+                secretKeyRef:
+                  name: {{ include "ocean.databaseSecret" . }}
+                  key: USERNAME
+            - name: MYSQL_HOST
+              valueFrom:
+                secretKeyRef:
+                  name: {{ include "ocean.databaseSecret" . }}
+                  key: HOSTNAME
+            - name: MYSQL_PASS
+              valueFrom:
+                secretKeyRef:
+                  name: {{ include "ocean.databaseSecret" . }}
+                  key: PASSWORD
+          volumeMounts:
+            - mountPath: /shared
+              name: seafile-data
+            - name: seafile-raw-configs
+              mountPath: /tmp/env-input/ccnet.conf
+              subPath: ccnet.conf
+            - name: seafile-raw-configs
+              mountPath: /tmp/env-input/gunicorn.conf.py
+              subPath: gunicorn.conf.py
+            - name: seafile-raw-configs
+              mountPath: /tmp/env-input/seafdav.conf
+              subPath: seafdav.conf
+            - name: seafile-raw-configs
+              mountPath: /tmp/env-input/seafile.conf
+              subPath: seafile.conf
+            - name: seafile-raw-configs
+              mountPath: /tmp/env-input/seahub_settings.py
+              subPath: seahub_settings.py
       containers:
-        - name: seafile-memcached
+        - name: "{{ .Chart.Name }}-memcached"
           image: memcached:1.5.6
           imagePullPolicy: {{ .Values.image.pullPolicy }}
-        - name: seafile
+        - name: "{{ .Chart.Name }}-seafile"
           securityContext:
             {{- toYaml .Values.securityContext | nindent 12 }}
           image: "{{ .Values.image.repository }}:{{ .Values.image.tag | default .Chart.AppVersion }}"
           imagePullPolicy: {{ .Values.image.pullPolicy }}
           ports:
             - name: http
-              containerPort: 80
+              containerPort: 8000
               protocol: TCP
+            {{- if .Values.webDav.enabled }}
+            - name: webDav
+              containerPort: {{ .Values.webDav.port }}
+              protocol: TCP
+            {{- end }}
           livenessProbe:
             httpGet:
               path: /
@@ -55,32 +107,15 @@ spec:
             periodSeconds: 10
             successThreshold: 1
             timeoutSeconds: 5
-          env:
-            - name: DB_HOST
-              valueFrom:
-                secretKeyRef:
-                  name: {{ include "ocean.databaseSecret" . }}
-                  key: HOST
-            - name: DB_ROOT_PASSWD
-              valueFrom:
-                secretKeyRef:
-                  name: {{ include "ocean.databaseSecret" . }}
-                  key: PASS
-            - name: SEAFILE_ADMIN_EMAIL
-              value: {{ .Values.adminEmail }}
-            - name: SEAFILE_ADMIN_PASSWORD
-              valueFrom:
-                secretKeyRef:
-                  name: {{ include "ocean.adminSecret" . }}
-                  key: PASSWORD
-            - name: TIME_ZONE
-              value: {{ .Values.timeZone | default "Etc/UTC" }}
           volumeMounts:
             - mountPath: /shared
               name: seafile-data
           resources:
             {{- toYaml .Values.resources | nindent 12 }}
       volumes:
+        - name: seafile-raw-configs
+          configMap:
+            name: "{{ template "ocean.fullname" . }}-raw-config"
         - name: seafile-data
           persistentVolumeClaim:
             claimName: {{ .Values.persistence.existingClaim | default (include "ocean.fullname" .) }}
