@@ -78,6 +78,7 @@ spec:
             {{- toYaml .Values.securityContext | nindent 12 }}
           image: "{{ .Values.image.repository }}:{{ .Values.image.tag | default .Chart.Version }}"
           imagePullPolicy: {{ .Values.image.pullPolicy }}
+          command: ["sleep", "60000"]
           ports:
             - name: http
               containerPort: 8000
