@@ -107,6 +107,9 @@ spec:
             - name: http
               containerPort: 8000
               protocol: TCP
+            - name: filesrv
+              containerPort: 8082
+              protocol: TCP
             {{- if .Values.webDav.enabled }}
             - name: webDav
               containerPort: {{ .Values.webDav.port }}

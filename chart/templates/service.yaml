@@ -11,5 +11,9 @@ spec:
       targetPort: http
       protocol: TCP
       name: http
+    - port: 8082
+      targetPort: filesrv
+      protocol: TCP
+      name: filesrv
   selector:
     {{- include "ocean.selectorLabels" . | nindent 4 }}
