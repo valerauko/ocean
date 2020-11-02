@@ -71,6 +71,16 @@ spec:
             - name: seafile-raw-configs
               mountPath: /tmp/env-input/seahub_settings.py
               subPath: seahub_settings.py
+        - name: "{{ .Chart.Name }}-ensure-folders"
+          image: alpine
+          command:
+            - "mkdir"
+            - "-p"
+            - "/shared/seafile/ccnet"
+            - "/shared/seafile/seafile-data"
+          volumeMounts:
+            - mountPath: /shared
+              name: seafile-data
       containers:
         - name: "{{ .Chart.Name }}-memcached"
           image: memcached:1.5.6
