@@ -32,7 +32,7 @@ spec:
             {{- toYaml .Values.securityContext | nindent 12 }}
           env:
             - name: DESTINATION
-              value: /shared/conf
+              value: /shared/seafile/conf
             - name: SECRET_KEY
               valueFrom:
                 secretKeyRef:
@@ -106,9 +106,8 @@ spec:
             successThreshold: 1
             timeoutSeconds: 5
           volumeMounts:
-            - mountPath: /opt/seafile
+            - mountPath: /shared
               name: seafile-data
-              subPath: /shared
           resources:
             {{- toYaml .Values.resources | nindent 12 }}
       volumes:
