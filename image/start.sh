@@ -1,4 +1,7 @@
 ./seafile.sh start
 # ./seahub.sh start
 
-wait $(pgrep "seafile-controller")
+while pgrep -f "seafile-controller"; do
+  echo "seafile-controller PID $(pgrep seafile-controller)"
+  sleep 30;
+done
