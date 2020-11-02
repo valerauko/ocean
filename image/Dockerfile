@@ -26,4 +26,6 @@ RUN mkdir -p /shared/seafile/ccnet /shared/seafile/seafile-data /shared/seafile/
     ln -s /shared/seafile/conf /opt/seafile/conf && \
     ln -s /shared/seafile/seafile-data /opt/seafile/seafile-data
 
-CMD ./seafile.sh start
+COPY start.sh .
+
+CMD ./start.sh
