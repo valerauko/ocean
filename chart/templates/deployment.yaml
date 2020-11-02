@@ -106,15 +106,9 @@ spec:
             successThreshold: 1
             timeoutSeconds: 5
           volumeMounts:
-            - mountPath: /opt/seafile/ccnet
+            - mountPath: /opt/seafile
               name: seafile-data
-              subPath: /shared/ccnet
-            - mountPath: /opt/seafile/conf
-              name: seafile-data
-              subPath: /shared/conf
-            - mountPath: /opt/seafile/seafile-data
-              name: seafile-data
-              subPath: /shared/seafile-data
+              subPath: /shared
           resources:
             {{- toYaml .Values.resources | nindent 12 }}
       volumes:
