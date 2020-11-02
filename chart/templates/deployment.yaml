@@ -78,7 +78,6 @@ spec:
             {{- toYaml .Values.securityContext | nindent 12 }}
           image: "{{ .Values.image.repository }}:{{ .Values.image.tag | default .Chart.Version }}"
           imagePullPolicy: {{ .Values.image.pullPolicy }}
-          command: ["ls", "-la", ".."]
           ports:
             - name: http
               containerPort: 8000
@@ -107,8 +106,15 @@ spec:
             successThreshold: 1
             timeoutSeconds: 5
           volumeMounts:
-            - mountPath: /shared
+            - mountPath: /opt/seafile/ccnet
               name: seafile-data
+              subPath: /shared/ccnet
+            - mountPath: /opt/seafile/conf
+              name: seafile-data
+              subPath: /shared/conf
+            - mountPath: /opt/seafile/seafile-data
+              name: seafile-data
+              subPath: /shared/seafile-data
           resources:
             {{- toYaml .Values.resources | nindent 12 }}
       volumes:
