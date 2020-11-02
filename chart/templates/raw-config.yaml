@@ -5,6 +5,9 @@ metadata:
   labels:
     {{- include "ocean.labels" . | nindent 4 }}
 data:
+  admin.txt: |
+    {"email":"${ADMIN_EMAIL}","password":"${ADMIN_PASS}"}
+
   ccnet.conf: |
     [General]
     SERVICE_URL = {{ .Values.location }}

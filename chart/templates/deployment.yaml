@@ -33,6 +33,16 @@ spec:
           env:
             - name: DESTINATION
               value: /shared/seafile/conf
+            - name: ADMIN_EMAIL
+              valueFrom:
+                secretKeyRef:
+                  name: {{ include "ocean.adminSecret" . }}
+                  key: EMAIL
+            - name: ADMIN_PASS
+              valueFrom:
+                secretKeyRef:
+                  name: {{ include "ocean.adminSecret" . }}
+                  key: PASSWORD
             - name: SECRET_KEY
               valueFrom:
                 secretKeyRef:
@@ -56,6 +66,9 @@ spec:
           volumeMounts:
             - mountPath: /shared
               name: seafile-data
+            - name: seafile-raw-configs
+              mountPath: /tmp/env-input/admin.txt
+              subPath: admin.txt
             - name: seafile-raw-configs
               mountPath: /tmp/env-input/ccnet.conf
               subPath: ccnet.conf
