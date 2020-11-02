@@ -78,7 +78,7 @@ spec:
             {{- toYaml .Values.securityContext | nindent 12 }}
           image: "{{ .Values.image.repository }}:{{ .Values.image.tag | default .Chart.Version }}"
           imagePullPolicy: {{ .Values.image.pullPolicy }}
-          command: ls -la ..
+          command: ["ls", "-la", ".."]
           ports:
             - name: http
               containerPort: 8000
