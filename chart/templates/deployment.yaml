@@ -54,6 +54,8 @@ spec:
                   name: {{ include "ocean.databaseSecret" . }}
                   key: PASSWORD
           volumeMounts:
+            - mountPath: /shared
+              name: seafile-data
             - name: seafile-raw-configs
               mountPath: /tmp/env-input/ccnet.conf
               subPath: ccnet.conf
