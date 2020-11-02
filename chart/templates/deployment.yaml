@@ -112,24 +112,24 @@ spec:
               containerPort: {{ .Values.webDav.port }}
               protocol: TCP
             {{- end }}
-          livenessProbe:
-            httpGet:
-              path: /
-              port: http
-            failureThreshold: 6
-            initialDelaySeconds: 30
-            periodSeconds: 30
-            successThreshold: 1
-            timeoutSeconds: 5
-          readinessProbe:
-            httpGet:
-              path: /
-              port: http
-            failureThreshold: 6
-            initialDelaySeconds: 30
-            periodSeconds: 10
-            successThreshold: 1
-            timeoutSeconds: 5
+          # livenessProbe:
+          #   httpGet:
+          #     path: /
+          #     port: http
+          #   failureThreshold: 6
+          #   initialDelaySeconds: 30
+          #   periodSeconds: 30
+          #   successThreshold: 1
+          #   timeoutSeconds: 5
+          # readinessProbe:
+          #   httpGet:
+          #     path: /
+          #     port: http
+          #   failureThreshold: 6
+          #   initialDelaySeconds: 30
+          #   periodSeconds: 10
+          #   successThreshold: 1
+          #   timeoutSeconds: 5
           volumeMounts:
             - mountPath: /shared
               name: seafile-data
