@@ -61,3 +61,7 @@ When set that way, the `FILE_SERVER_ROOT` should be set accordingly from the web
 | `podAnnotations`                          | Pod annotations                               | `{}`                                                    |
 | `podSecurityContext` | Pod security context | `{}` |
 | `securityContext` | Security context | `{}` |
+
+### Example
+
+For a working example check out [a working ArgoCD app](https://github.com/valerauko/sut/blob/4b3dd84/apps/71-seafile.yaml).
