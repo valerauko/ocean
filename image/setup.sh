@@ -13,3 +13,5 @@ for folder in ccnet conf seafile-data; do
     mkdir -pv /shared/seafile/$folder
   fi
 done
+
+exit 0
