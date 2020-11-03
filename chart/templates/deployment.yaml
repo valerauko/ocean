@@ -34,7 +34,7 @@ spec:
             # the config generator is hardcoded to output http://$SERVER_IP:8000
             # so add something identifiable to replace later in setup.sh
             - name: SERVER_IP
-              value: "REPLACE_ME"
+              value: "replace.me"
             - name: SERVER_LOCATION
               value: "{{ .Values.location }}"
             - name: MYSQL_HOST
