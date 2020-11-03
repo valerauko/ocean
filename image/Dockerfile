@@ -25,6 +25,7 @@ RUN rm -rf /var/lib/apt/lists/*
 RUN pip3 install Pillow pylibmc captcha jinja2 sqlalchemy \
       django-pylibmc django-simple-captcha python3-ldap
 
-COPY start.sh .
+COPY seafile.sh .
+COPY seahub.sh .
 
-CMD ./start.sh
+CMD ./seafile.sh

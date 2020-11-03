@@ -1,0 +1,1 @@
+./seahub.sh start
