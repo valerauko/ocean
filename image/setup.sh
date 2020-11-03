@@ -5,4 +5,10 @@ rm /opt/seafile/ccnet /opt/seafile/conf /opt/seafile/seafile-data
 
 ./setup-seafile-mysql.sh "$@"
 
-mv /opt/seafile/ccnet /shared/seafile/ccnet
+for folder in ccnet conf seafile-data; do
+  if [ -d "/opt/seafile/$folder" ]; then
+    mv /opt/seafile/$folder /shared/seafile/$folder
+  else
+    mkdir -pv /shared/seafile/$folder
+  fi
+done
