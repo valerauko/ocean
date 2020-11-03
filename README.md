@@ -2,6 +2,10 @@
 
 A Helm chart to install Seafile on a cluster.
 
+## Usage
+
+After installation, the [Seafile clients](https://www.seafile.com/en/download/) or the web UI (available at the configured `location`) can be used to sync and manage files. Login as the `admin` user created during install and sync away!
+
 ## Installation
 
 Configure using `values`.
