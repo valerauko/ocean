@@ -49,16 +49,6 @@ spec:
             - name: seafile-raw-configs
               mountPath: /tmp/env-input/admin.txt
               subPath: admin.txt
-        - name: "{{ .Chart.Name }}-ensure-folders"
-          image: alpine
-          command:
-            - "mkdir"
-            - "-pv"
-            - "/shared/seafile/ccnet"
-            - "/shared/seafile/seafile-data"
-          volumeMounts:
-            - mountPath: /shared
-              name: seafile-data
         - name: "{{ .Chart.Name }}-setup"
           image: "{{ .Values.image.repository }}:{{ .Values.image.tag | default .Chart.Version }}"
           imagePullPolicy: {{ .Values.image.pullPolicy }}
