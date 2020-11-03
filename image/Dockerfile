@@ -4,6 +4,8 @@ RUN apk add curl
 
 RUN curl -sflO "https://s3.eu-central-1.amazonaws.com/download.seadrive.org/seafile-server_7.1.5_x86-64.tar.gz"
 RUN tar xzvf "seafile-server_7.1.5_x86-64.tar.gz"
+RUN sed -i 's/CREATE TABLE `/CREATE TABLE IF NOT EXISTS `/g' \
+    seafile-server-7.1.5/seahub/sql/mysql.sql
 
 FROM ubuntu:20.04
 
