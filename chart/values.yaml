@@ -61,6 +61,10 @@ ingress:
   hosts:
     - host: chart-example.local
       paths: []
+      #   - path: "/"
+      #     port: "80"
+      #   - path: "/seafhttp"
+      #     port: "8082"
   tls: []
   #  - secretName: chart-example-tls
   #    hosts:
