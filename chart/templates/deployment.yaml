@@ -25,30 +25,6 @@ spec:
       securityContext:
         {{- toYaml .Values.podSecurityContext | nindent 8 }}
       initContainers:
-        - name: "{{ .Chart.Name }}-generate-config"
-          image: valerauko/env-replace:0.4.1
-          workingDir: /tmp/env-input
-          securityContext:
-            {{- toYaml .Values.securityContext | nindent 12 }}
-          env:
-            - name: DESTINATION
-              value: /shared/seafile/conf
-            - name: ADMIN_EMAIL
-              valueFrom:
-                secretKeyRef:
-                  name: {{ include "ocean.adminSecret" . }}
-                  key: EMAIL
-            - name: ADMIN_PASS
-              valueFrom:
-                secretKeyRef:
-                  name: {{ include "ocean.adminSecret" . }}
-                  key: PASSWORD
-          volumeMounts:
-            - mountPath: /shared
-              name: seafile-data
-            - name: seafile-raw-configs
-              mountPath: /tmp/env-input/admin.txt
-              subPath: admin.txt
         - name: "{{ .Chart.Name }}-setup"
           image: "{{ .Values.image.repository }}:{{ .Values.image.tag | default .Chart.Version }}"
           imagePullPolicy: {{ .Values.image.pullPolicy }}
@@ -82,6 +58,30 @@ spec:
             - "auto"
             - "-n"
             - "{{ .Chart.Name }}"
+        - name: "{{ .Chart.Name }}-generate-config"
+          image: valerauko/env-replace:0.4.1
+          workingDir: /tmp/env-input
+          securityContext:
+            {{- toYaml .Values.securityContext | nindent 12 }}
+          env:
+            - name: DESTINATION
+              value: /shared/seafile/conf
+            - name: ADMIN_EMAIL
+              valueFrom:
+                secretKeyRef:
+                  name: {{ include "ocean.adminSecret" . }}
+                  key: EMAIL
+            - name: ADMIN_PASS
+              valueFrom:
+                secretKeyRef:
+                  name: {{ include "ocean.adminSecret" . }}
+                  key: PASSWORD
+          volumeMounts:
+            - mountPath: /shared
+              name: seafile-data
+            - name: seafile-raw-configs
+              mountPath: /tmp/env-input/admin.txt
+              subPath: admin.txt
       containers:
         - name: "{{ .Chart.Name }}-memcached"
           image: memcached:1.5.6
