@@ -74,6 +74,9 @@ spec:
               value: "%"
             - name: MYSQL_ROOT_PASSWD
               value: "it's required but not used"
+          volumeMounts:
+            - mountPath: /shared
+              name: seafile-data
           command:
             - "./setup-seafile-mysql.sh"
             - "auto"
