@@ -1,3 +1,5 @@
+mkdir -p /shared/seafile/seafile-data
+
 cp /shared/seafile/conf/admin.txt /shared/seafile/conf/admin.txt.dup
 ./seafile.sh start
 mv /shared/seafile/conf/admin.txt.dup /shared/seafile/conf/admin.txt

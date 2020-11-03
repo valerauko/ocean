@@ -25,8 +25,6 @@ RUN rm -rf /var/lib/apt/lists/*
 RUN pip3 install Pillow pylibmc captcha jinja2 sqlalchemy \
       django-pylibmc django-simple-captcha python3-ldap
 
-RUN mkdir -p /shared/seafile/seafile-data
-
 RUN ln -s /shared/seafile/ccnet /opt/seafile/ccnet && \
     ln -s /shared/seafile/conf /opt/seafile/conf && \
     ln -s /shared/seafile/seafile-data /opt/seafile/seafile-data
