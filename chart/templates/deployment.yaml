@@ -106,6 +106,9 @@ spec:
               containerPort: {{ .Values.webDav.port }}
               protocol: TCP
             {{- end }}
+          env:
+            - name: DEBUG
+              value: "1"
           livenessProbe:
             httpGet:
               path: /
