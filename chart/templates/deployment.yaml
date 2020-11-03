@@ -78,7 +78,7 @@ spec:
             - mountPath: /shared
               name: seafile-data
           command:
-            - "./setup-seafile-mysql.sh"
+            - "./setup.sh"
             - "auto"
             - "-n"
             - "{{ .Chart.Name }}"

@@ -29,5 +29,7 @@ RUN ln -s /shared/seafile/ccnet /opt/seafile/ccnet && \
     ln -s /shared/seafile/conf /opt/seafile/conf && \
     ln -s /shared/seafile/seafile-data /opt/seafile/seafile-data
 
+COPY setup.sh .
 COPY entrypoint.sh .
+
 CMD ./entrypoint.sh
