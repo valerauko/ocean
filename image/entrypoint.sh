@@ -4,5 +4,5 @@ mv /shared/seafile/conf/admin.txt.dup /shared/seafile/conf/admin.txt
 ./seahub.sh start
 
 while pgrep -f "seafile-controller" 1>/dev/null; do
-  wait $(pgrep -f seafile-controller)
+  sleep 30
 done
