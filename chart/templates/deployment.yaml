@@ -43,47 +43,12 @@ spec:
                 secretKeyRef:
                   name: {{ include "ocean.adminSecret" . }}
                   key: PASSWORD
-            - name: SECRET_KEY
-              valueFrom:
-                secretKeyRef:
-                  name: "{{ template "ocean.fullname" . }}-key-secret"
-                  key: KEY
-            - name: MYSQL_USER
-              valueFrom:
-                secretKeyRef:
-                  name: {{ include "ocean.databaseSecret" . }}
-                  key: USERNAME
-            - name: MYSQL_HOST
-              valueFrom:
-                secretKeyRef:
-                  name: {{ include "ocean.databaseSecret" . }}
-                  key: HOSTNAME
-            - name: MYSQL_PASS
-              valueFrom:
-                secretKeyRef:
-                  name: {{ include "ocean.databaseSecret" . }}
-                  key: PASSWORD
           volumeMounts:
             - mountPath: /shared
               name: seafile-data
             - name: seafile-raw-configs
               mountPath: /tmp/env-input/admin.txt
               subPath: admin.txt
-            - name: seafile-raw-configs
-              mountPath: /tmp/env-input/ccnet.conf
-              subPath: ccnet.conf
-            - name: seafile-raw-configs
-              mountPath: /tmp/env-input/gunicorn.conf.py
-              subPath: gunicorn.conf.py
-            - name: seafile-raw-configs
-              mountPath: /tmp/env-input/seafdav.conf
-              subPath: seafdav.conf
-            - name: seafile-raw-configs
-              mountPath: /tmp/env-input/seafile.conf
-              subPath: seafile.conf
-            - name: seafile-raw-configs
-              mountPath: /tmp/env-input/seahub_settings.py
-              subPath: seahub_settings.py
         - name: "{{ .Chart.Name }}-ensure-folders"
           image: alpine
           command:
@@ -94,6 +59,36 @@ spec:
           volumeMounts:
             - mountPath: /shared
               name: seafile-data
+        - name: "{{ .Chart.Name }}-setup"
+          image: "{{ .Values.image.repository }}:{{ .Values.image.tag | default .Chart.Version }}"
+          imagePullPolicy: {{ .Values.image.pullPolicy }}
+          env:
+            - name: USE_EXISTING_DB
+              value: "1"
+            - name: MYSQL_HOST
+              valueFrom:
+                secretKeyRef:
+                  name: {{ include "ocean.databaseSecret" . }}
+                  key: HOSTNAME
+            - name: MYSQL_USER
+              valueFrom:
+                secretKeyRef:
+                  name: {{ include "ocean.databaseSecret" . }}
+                  key: USERNAME
+            - name: MYSQL_USER_PASSWD
+              valueFrom:
+                secretKeyRef:
+                  name: {{ include "ocean.databaseSecret" . }}
+                  key: PASSWORD
+            - name: MYSQL_USER_HOST
+              value: "%"
+            - name: MYSQL_ROOT_PASSWD
+              value: "it's required but not used"
+          command:
+            - "./setup-seafile-mysql.sh"
+            - "auto"
+            - "-n"
+            - "{{ .Chart.Name }}"
       containers:
         - name: "{{ .Chart.Name }}-memcached"
           image: memcached:1.5.6
