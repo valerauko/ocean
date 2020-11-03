@@ -11,7 +11,8 @@ sed -i 's/127.0.0.1/0.0.0.0/g' /opt/seafile/conf/gunicorn.conf.py
 for folder in ccnet conf seafile-data; do
   mkdir -pv /shared/seafile
   if [ -d "/opt/seafile/$folder" ]; then
-    mv /opt/seafile/$folder /shared/seafile/$folder
+    # if a folder is generated, merge it into the volume
+    cp -r /opt/seafile/$folder /shared/seafile && rm -r /opt/seafile/$folder
   else
     mkdir -pv /shared/seafile/$folder
   fi
