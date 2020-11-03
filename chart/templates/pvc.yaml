@@ -1,0 +1,14 @@
+{{- if (not .Values.persistence.existingClaim) }}
+kind: PersistentVolumeClaim
+apiVersion: v1
+metadata:
+  name: {{ template "ocean.fullname" . }}
+  labels: {{- include "ocean.labels" . | nindent 4 }}
+spec:
+  accessModes:
+    - {{ .Values.persistence.accessMode | quote }}
+  resources:
+    requests:
+      storage: {{ .Values.persistence.size | quote }}
+  {{ include "ocean.storageClass" . }}
+{{- end }}

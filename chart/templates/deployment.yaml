@@ -1,0 +1,157 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ include "ocean.fullname" . }}
+  labels:
+    {{- include "ocean.labels" . | nindent 4 }}
+spec:
+  replicas: {{ .Values.replicaCount }}
+  selector:
+    matchLabels:
+      {{- include "ocean.selectorLabels" . | nindent 6 }}
+  template:
+    metadata:
+      {{- with .Values.podAnnotations }}
+      annotations:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      labels:
+        {{- include "ocean.selectorLabels" . | nindent 8 }}
+    spec:
+      {{- with .Values.imagePullSecrets }}
+      imagePullSecrets:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      securityContext:
+        {{- toYaml .Values.podSecurityContext | nindent 8 }}
+      initContainers:
+        - name: "{{ .Chart.Name }}-setup"
+          image: "{{ .Values.image.repository }}:{{ .Values.image.tag | default .Chart.Version }}"
+          imagePullPolicy: {{ .Values.image.pullPolicy }}
+          env:
+            - name: USE_EXISTING_DB
+              value: "1"
+            # the config generator is hardcoded to output http://$SERVER_IP:8000
+            # so add something identifiable to replace later in setup.sh
+            - name: SERVER_IP
+              value: "replace.me"
+            - name: SERVER_LOCATION
+              value: "{{ .Values.location }}"
+            - name: MYSQL_HOST
+              valueFrom:
+                secretKeyRef:
+                  name: {{ include "ocean.databaseSecret" . }}
+                  key: HOSTNAME
+            - name: MYSQL_USER
+              valueFrom:
+                secretKeyRef:
+                  name: {{ include "ocean.databaseSecret" . }}
+                  key: USERNAME
+            - name: MYSQL_USER_PASSWD
+              valueFrom:
+                secretKeyRef:
+                  name: {{ include "ocean.databaseSecret" . }}
+                  key: PASSWORD
+            - name: MYSQL_USER_HOST
+              value: "%"
+            - name: MYSQL_ROOT_PASSWD
+              value: "it's required but not used"
+          volumeMounts:
+            - mountPath: /shared
+              name: seafile-data
+          command:
+            - "./setup.sh"
+            - "auto"
+            - "-n"
+            - "{{ .Chart.Name }}"
+        - name: "{{ .Chart.Name }}-generate-config"
+          image: valerauko/env-replace:0.4.1
+          workingDir: /tmp/env-input
+          securityContext:
+            {{- toYaml .Values.securityContext | nindent 12 }}
+          env:
+            - name: DESTINATION
+              value: /shared/seafile/conf
+            - name: ADMIN_EMAIL
+              valueFrom:
+                secretKeyRef:
+                  name: {{ include "ocean.adminSecret" . }}
+                  key: EMAIL
+            - name: ADMIN_PASS
+              valueFrom:
+                secretKeyRef:
+                  name: {{ include "ocean.adminSecret" . }}
+                  key: PASSWORD
+          volumeMounts:
+            - mountPath: /shared
+              name: seafile-data
+            - name: seafile-raw-configs
+              mountPath: /tmp/env-input/admin.txt
+              subPath: admin.txt
+      containers:
+        - name: "{{ .Chart.Name }}-memcached"
+          image: memcached:1.5.6
+          imagePullPolicy: {{ .Values.image.pullPolicy }}
+        - name: "{{ .Chart.Name }}-seafile"
+          securityContext:
+            {{- toYaml .Values.securityContext | nindent 12 }}
+          image: "{{ .Values.image.repository }}:{{ .Values.image.tag | default .Chart.Version }}"
+          imagePullPolicy: {{ .Values.image.pullPolicy }}
+          # command: ["sleep", "60000"]
+          ports:
+            - name: http
+              containerPort: 8000
+              protocol: TCP
+            - name: filesrv
+              containerPort: 8082
+              protocol: TCP
+            {{- if .Values.webDav.enabled }}
+            - name: webDav
+              containerPort: {{ .Values.webDav.port }}
+              protocol: TCP
+            {{- end }}
+          env:
+            - name: DEBUG
+              value: "1"
+          livenessProbe:
+            httpGet:
+              path: /
+              port: http
+            failureThreshold: 6
+            initialDelaySeconds: 30
+            periodSeconds: 30
+            successThreshold: 1
+            timeoutSeconds: 5
+          readinessProbe:
+            httpGet:
+              path: /
+              port: http
+            failureThreshold: 6
+            initialDelaySeconds: 30
+            periodSeconds: 10
+            successThreshold: 1
+            timeoutSeconds: 5
+          volumeMounts:
+            - mountPath: /shared
+              name: seafile-data
+          resources:
+            {{- toYaml .Values.resources | nindent 12 }}
+      volumes:
+        - name: seafile-raw-configs
+          configMap:
+            name: "{{ template "ocean.fullname" . }}-raw-config"
+        - name: seafile-data
+          persistentVolumeClaim:
+            claimName: {{ .Values.persistence.existingClaim | default (include "ocean.fullname" .) }}
+      {{- with .Values.nodeSelector }}
+      nodeSelector:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      {{- with .Values.affinity }}
+      affinity:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      {{- with .Values.tolerations }}
+      tolerations:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
