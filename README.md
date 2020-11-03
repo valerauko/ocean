@@ -26,7 +26,7 @@ Create the following databases and grant sensible (table creating) privileges to
 
 If using an ingress, some path (the official example uses `seafhttp`, but anything works really) should be set to route to port 8082 (where the file server is listening).
 
-When set that way, the `FILE_SERVER_ROOT` should be set accordingly.
+When set that way, the `FILE_SERVER_ROOT` should be set accordingly from the web UI (note: once set from the UI, those settings will take priority over any config/environment changes).
 
 ## Configuration
 
