@@ -65,3 +65,7 @@ When set that way, the `FILE_SERVER_ROOT` should be set accordingly from the web
 ### Example
 
 For a working example check out [a working ArgoCD app](https://github.com/valerauko/sut/blob/4b3dd84/apps/71-seafile.yaml).
+
+## Cover photo
+
+<span>Photo by <a href="https://unsplash.com/@unstable_affliction?utm_source=unsplash&amp;utm_medium=referral&amp;utm_content=creditCopyText">Ivan Bandura</a> on <a href="https://unsplash.com/s/photos/ocean?utm_source=unsplash&amp;utm_medium=referral&amp;utm_content=creditCopyText">Unsplash</a></span>
