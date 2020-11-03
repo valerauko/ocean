@@ -28,31 +28,6 @@ admin:
   ## EMAIL, PASSWORD
   # existingSecret: ""
 
-webDav:
-  enabled: false
-  port: 8080
-
-imagePullSecrets: []
-nameOverride: ""
-fullnameOverride: ""
-
-podAnnotations: {}
-
-podSecurityContext: {}
-  # fsGroup: 2000
-
-securityContext: {}
-  # capabilities:
-  #   drop:
-  #   - ALL
-  # readOnlyRootFilesystem: true
-  # runAsNonRoot: true
-  # runAsUser: 1000
-
-service:
-  type: ClusterIP
-  port: 80
-
 ingress:
   enabled: false
   annotations: {}
@@ -95,8 +70,31 @@ resources: {}
   #   cpu: 100m
   #   memory: 128Mi
 
+webDav:
+  enabled: false
+  port: 8080
+
+podAnnotations: {}
+
+podSecurityContext: {}
+  # fsGroup: 2000
+
+securityContext: {}
+  # capabilities:
+  #   drop:
+  #   - ALL
+  # readOnlyRootFilesystem: true
+  # runAsNonRoot: true
+  # runAsUser: 1000
+
+service:
+  type: ClusterIP
+  port: 80
+
 nodeSelector: {}
-
 tolerations: []
-
 affinity: {}
+imagePullSecrets: []
+
+nameOverride: ""
+fullnameOverride: ""
