@@ -36,10 +36,13 @@ ingress:
   hosts:
     - host: chart-example.local
       paths: []
-      #   - path: "/"
-      #     port: "80"
-      #   - path: "/seafhttp"
-      #     port: "8082"
+      # - path: "/(.*)"
+      #   port: "80"
+      ## You'll need to add some prefix stripping method to take out the /seafhttp
+      ## For NGINX that'd be a rewrite-target annotation
+      ## For Traefik a StripPrefix Middleware and a separate IngressRoute
+      # - path: "/seafhttp/(.*)"
+      #   port: "8082"
   tls: []
   #  - secretName: chart-example-tls
   #    hosts:
