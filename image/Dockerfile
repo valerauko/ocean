@@ -18,11 +18,11 @@ COPY --from=downloader seafile-server-8.0.4 /opt/seafile/seafile-server-8.0.4
 WORKDIR /opt/seafile/seafile-server-8.0.4
 
 RUN apt-get update -y && \
-    apt-get install -y libmemcached-dev python3 python3-setuptools python3-pip
+    apt-get install -y libmemcached-dev python3 python3-setuptools python3-pip libmysqlclient-dev
 
 RUN rm -rf /var/lib/apt/lists/*
 
-RUN pip3 install Pillow pylibmc captcha jinja2 sqlalchemy \
+RUN pip3 install Pillow pylibmc captcha jinja2 sqlalchemy mysqlclient \
     django-pylibmc django-simple-captcha python3-ldap
 
 RUN ln -s /shared/seafile/ccnet /opt/seafile/ccnet && \
